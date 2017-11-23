@@ -8,13 +8,13 @@ module.exports = function(app) {
 
 	app.post("/api/friends", function(req, res) {
 		var newFriend = req.body;
-		compatibility(newFriend);
+		var bestFriend = compatibility(newFriend);
 		friends.push(newFriend);
+		res.send(bestFriend);
 	});
 };
 
 function compatibility(newFriend) {
-	console.log(friends.length);
 	var leastDiff = 41;
 	var mostCompatible;
 	if (friends.length === 0) {
@@ -28,10 +28,8 @@ function compatibility(newFriend) {
 			if (difference < leastDiff) {
 				leastDiff = difference;
 				mostCompatible = i;
-				console.log(mostCompatible);
 			};
 		};
-		console.log(difference);
 	};
-	console.log(friends[mostCompatible]);
+	return friends[mostCompatible];
 };

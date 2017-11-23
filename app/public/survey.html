@@ -17,7 +17,7 @@
 		<div class="input-group-md">
 		  	<input type="text" name="name" class="form-control" required autofocus>
 		</div>
-		<h4>Link to Photo Image (Required)</h4>
+		<h4>Link to Photo Image (Required, If you don't use an actual link, you're a monkey!)</h4>
 		<div class="input-group-md">
 		  	<input type="text" name="photo" class="form-control" required>
 		</div>
@@ -25,10 +25,10 @@
 		<h3><strong>Question 1</strong></h3>
 		<h4>Your mind is always buzzing with unexplored ideas and plans.</h4>
 		<label class="radio-inline"><input type="radio" name="optradio1" value="1" required>1 (Strongly Disagree)</label>
-		<label class="radio-inline"><input type="radio" name="optradio1" value="2">2</label>
-		<label class="radio-inline"><input type="radio" name="optradio1" value="3">3</label>
-		<label class="radio-inline"><input type="radio" name="optradio1" value="4">4</label>
-		<label class="radio-inline"><input type="radio" name="optradio1" value="5">5 (Strongly Agree)</label>
+		<label class="radio-inline"><input type="radio" name="optradio1" value="2" required>2</label>
+		<label class="radio-inline"><input type="radio" name="optradio1" value="3" required>3</label>
+		<label class="radio-inline"><input type="radio" name="optradio1" value="4" required>4</label>
+		<label class="radio-inline"><input type="radio" name="optradio1" value="5" required>5 (Strongly Agree)</label>
 
 		<h3><strong>Question 2</strong></h3>
 		<h4>Generally speaking, you rely more on your experience than your imagination.</h4>
@@ -105,7 +105,7 @@
 		<br>
 		<br>
 
-		<button id="submit" type="submit" class="btn btn-primary btn-lg btn-block" href="/results" role="button"><i class="fa fa-check-circle"></i> Submit</button>
+		<button id="submit" type="submit" class="btn btn-primary btn-lg btn-block" role="button"><i class="fa fa-check-circle"></i> Submit</button>
 
 		<hr>
 
@@ -117,11 +117,33 @@
 
 	</div>
 
+	<!-- Modal -->
+	<div id="compatibleFriend" class="modal fade" role="dialog">
+	  <div class="modal-dialog">
+
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h3 class="modal-title">Friend Finder Results</h3>
+	      </div>
+	      <div class="modal-body">
+	        <h4 id="friendName">The Creator: You're the first one to take the survey! Here's a picture of me!</h4>
+	        <img id="friendImg" src="https://avatars0.githubusercontent.com/u/29668529?s=460&v=4" alt="The Creator" onError="src='https://i.guim.co.uk/img/media/b41ed9c5402b88334d3e766850679cb987054a6b/0_267_2000_2500/master/2000.jpg?w=700&q=55&auto=format&usm=12&fit=max&s=b72b8cbf15efd3e7cab052484c1e53c7'">
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+
+	  </div>
+	</div>
+
 	<script type="text/javascript">
 		$("#submit").on("click", function(event) {
 			event.preventDefault();
-			var name = $("input[name=name").val();
-			var photo = $("input[name=photo").val();
+			var name = $("input[name=name").val().trim();
+			var photo = $("input[name=photo").val().trim();
 			var scores = [];
 			var ans1 = $("input[name=optradio1]:checked").val();
 			var ans2 = $("input[name=optradio2]:checked").val();
@@ -151,9 +173,11 @@
 				photo: photo,
 				scores: scores
 			};
-			console.log(friend);
 			$.post("/api/friends", friend).done(function(data) {
-				alert("Stuff added");
+				$("#friendName").html(data.name);
+				$("#friendImg").attr("src", data.photo);
+				$("#friendImg").width(400).height(500);
+				$("#compatibleFriend").modal("show");
 			});
 		});
 	</script>
